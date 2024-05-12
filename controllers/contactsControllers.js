@@ -75,16 +75,3 @@ export const updateContact = async (req, res, next) => {
     next(error);
   }
 };
-
-// {
-//     "name":"Dan",
-//     "email":"rtggg@email.com",
-//     "phone":"(992) 914-3792"
-// }
-
-//  {
-//     "id": "rsKkOQUi80UsgVPCcLZZW",
-//     "name": "Alec Howard",
-//     "email": "Donec.elementum@scelerisquescelerisquedui.net",
-//     "phone": "(748) 206-2688"
-//   }
