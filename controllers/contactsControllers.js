@@ -40,6 +40,7 @@ export const deleteContact = async (req, res, next) => {
     if (!deletedContact) {
       throw HttpError(404);
     }
+    res.status(200).json(deletedContact);
   } catch (error) {
     next(error);
   }
