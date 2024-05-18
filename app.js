@@ -9,8 +9,7 @@ const app = express();
 
 mongoose.set("strictQuery", true);
 
-const DB_HOST =
-  "mongodb+srv://merlincatno:102030_Nata@cluster0.mbx6sod.mongodb.net/db-contacts?retryWrites=true&w=majority&appName=Cluster0";
+const { DB_HOST } = process.env;
 mongoose
   .connect(DB_HOST)
   .then(() =>
