@@ -4,6 +4,8 @@ import {
   createContactSchema,
   updateContactSchema,
 } from "../models/contact.js";
+import mongoose from "mongoose";
+import { isValidId } from "../helpers/isValidId.js";
 
 export const getAllContacts = async (req, res, next) => {
   try {
@@ -16,6 +18,9 @@ export const getAllContacts = async (req, res, next) => {
 
 export const getOneContact = async (req, res, next) => {
   const { id } = req.params;
+  if (!isValidId(id)) {
+    return next(HttpError(404));
+  }
   try {
     const contact = await Contact.findById(id);
     if (!contact) {
@@ -29,6 +34,9 @@ export const getOneContact = async (req, res, next) => {
 
 export const deleteContact = async (req, res, next) => {
   const { id } = req.params;
+  if (!isValidId(id)) {
+    return next(HttpError(404));
+  }
   try {
     const deletedContact = await Contact.findByIdAndDelete(id);
     if (!deletedContact) {
@@ -62,6 +70,9 @@ export const updateContact = async (req, res, next) => {
   }
   try {
     const { id } = req.params;
+    if (!isValidId(id)) {
+      return next(HttpError(404));
+    }
     const updatedContact = await Contact.findByIdAndUpdate(id, req.body, {
       new: true,
     });
@@ -76,6 +87,9 @@ export const updateContact = async (req, res, next) => {
 
 export const updateContactFavoriteStatus = async (req, res, next) => {
   const { id } = req.params;
+  if (!isValidId(id)) {
+    return next(HttpError(404));
+  }
   const { favorite } = req.body;
 
   if (typeof favorite !== "boolean") {
