@@ -1,25 +1,30 @@
 import mongoose from "mongoose";
 import Joi from "joi";
+import { handleMongooseError } from "../helpers/handleMongooseError";
 
 const { Schema, model } = mongoose;
 
-const contactSchema = new Schema({
-  name: {
-    type: String,
-    required: [true, "Set name for contact"],
+const contactSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Set name for contact"],
+    },
+    email: {
+      type: String,
+    },
+    phone: {
+      type: String,
+    },
+    favorite: {
+      type: Boolean,
+      default: false,
+    },
   },
-  email: {
-    type: String,
-  },
-  phone: {
-    type: String,
-  },
-  favorite: {
-    type: Boolean,
-    default: false,
-  },
-});
+  { versionKey: false }
+);
 
+contactSchema.post("save", handleMongooseError);
 export const Contact = model("Contact", contactSchema);
 
 export const createContactSchema = Joi.object({
@@ -35,6 +40,7 @@ export const createContactSchema = Joi.object({
         "Please use correct format for phone number (XXX) XXX-XXXX",
     })
     .required(),
+  favorite: Joi.boolean().required(),
 });
 
 export const updateContactSchema = Joi.object({
@@ -49,7 +55,7 @@ export const updateContactSchema = Joi.object({
       "string.pattern.base":
         "Please use correct format for phone number (XXX) XXX-XXXX",
     }),
-  favorite: Joi.boolean,
+  favorite: Joi.boolean(),
 })
   .min(1)
   .messages({ "object.min": "Body must have at least one field" });
