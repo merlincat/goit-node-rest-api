@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Joi from "joi";
-import { handleMongooseError } from "../helpers/handleMongooseError";
+import { handleMongooseError } from "../helpers/handleMongooseError.js";
 
 const { Schema, model } = mongoose;
 
