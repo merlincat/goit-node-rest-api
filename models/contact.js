@@ -41,7 +41,6 @@ export const createContactSchema = Joi.object({
         "Please use correct format for phone number (XXX) XXX-XXXX",
     })
     .required(),
-  favorite: Joi.boolean().required(),
 });
 
 export const updateContactSchema = Joi.object({
@@ -60,3 +59,7 @@ export const updateContactSchema = Joi.object({
 })
   .min(1)
   .messages({ "object.min": "Body must have at least one field" });
+
+export const addToFavoriteContactSchema = Joi.object({
+  favorite: Joi.boolean().required(),
+});

@@ -3,6 +3,7 @@ import {
   Contact,
   createContactSchema,
   updateContactSchema,
+  addToFavoriteContactSchema,
 } from "../models/contact.js";
 import mongoose from "mongoose";
 
@@ -76,6 +77,10 @@ export const updateContact = async (req, res, next) => {
 };
 
 export const updateContactFavoriteStatus = async (req, res, next) => {
+  const { error } = addToFavoriteContactSchema.validate(req.body);
+  if (error) {
+    return next(HttpError(400, error.message));
+  }
   const { id } = req.params;
   const { favorite } = req.body;
 
