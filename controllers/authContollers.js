@@ -1,4 +1,9 @@
-import { User, loginSchema, registerSchema } from "../models/user.js";
+import {
+  User,
+  loginSchema,
+  registerSchema,
+  subscriptionSchema,
+} from "../models/user.js";
 import HttpError from "../helpers/HttpError.js";
 import createHashedPassword from "../helpers/createHashPassword.js";
 import bcrypt from "bcrypt";
@@ -18,7 +23,7 @@ export const register = async (req, res, next) => {
     if (user) {
       return next(HttpError(409, "Email in use"));
     }
-    const hashedPassword = (await createHashedPassword(password)).result;
+    const hashedPassword = await createHashedPassword(password);
     const newUser = await User.create({
       ...req.body,
       password: hashedPassword,
@@ -51,12 +56,55 @@ export const login = async (req, res, next) => {
       id: user._id,
     };
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
+    await User.findByIdAndUpdate(user._id, { token });
     res.status(200).json({
       token,
       user: {
         email: user.email,
         subscription: user.subscription,
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export const getCurrent = async (req, res, next) => {
+  const { email, subscription } = req.user;
+  res.json({
+    email,
+    subscription,
+  });
+};
+export const logout = async (req, res, next) => {
+  const { _id } = req.user;
+  try {
+    await User.findByIdAndUpdate(_id, { token: null });
+    res.status(204).json();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateSubscription = async (req, res, next) => {
+  const { error } = subscriptionSchema.validate(req.body);
+  if (error) {
+    return next(HttpError(400, "Invalid subscription value"));
+  }
+
+  try {
+    const { _id } = req.user;
+    const { subscription } = req.body;
+    const updatedUser = await User.findByIdAndUpdate(
+      _id,
+      { subscription },
+      { new: true }
+    );
+    if (!updatedUser) {
+      return next(HttpError(404, "User not found"));
+    }
+    res.status(200).json({
+      email: updatedUser.email,
+      subscription: updatedUser.subscription,
     });
   } catch (error) {
     next(error);
