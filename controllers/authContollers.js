@@ -29,8 +29,7 @@ export const register = async (req, res, next) => {
       password: hashedPassword,
     });
     res.status(201).json({
-      email: newUser.email,
-      subscription: newUser.subscription,
+      user: { email: newUser.email, subscription: newUser.subscription },
     });
   } catch (error) {
     next(error);
