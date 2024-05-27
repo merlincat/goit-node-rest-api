@@ -9,12 +9,13 @@ import createHashedPassword from "../helpers/createHashPassword.js";
 import bcrypt from "bcrypt";
 import "dotenv/config";
 import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
 
 const { SECRET_KEY } = process.env;
 export const register = async (req, res, next) => {
   const { error } = registerSchema.validate(req.body);
   if (error) {
-    return next(HttpError(400));
+    return next(HttpError(400, error.message));
   }
 
   try {
@@ -24,12 +25,19 @@ export const register = async (req, res, next) => {
       return next(HttpError(409, "Email in use"));
     }
     const hashedPassword = await createHashedPassword(password);
+    const avatarURL = gravatar.url(email, { s: "200", r: "pg", d: "mm" });
+
     const newUser = await User.create({
       ...req.body,
       password: hashedPassword,
+      avatarURL,
     });
     res.status(201).json({
-      user: { email: newUser.email, subscription: newUser.subscription },
+      user: {
+        email: newUser.email,
+        subscription: newUser.subscription,
+        avatarURL: newUser.avatarURL,
+      },
     });
   } catch (error) {
     next(error);
