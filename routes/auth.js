@@ -28,6 +28,6 @@ authRouter.patch(
   uploadAvatar
 );
 authRouter.get("/verify/:verificationToken", verifyEmail);
-authRouter.post("/verfy", validateBody(verifySchema), resendVerifyEmail);
+authRouter.post("/verify", validateBody(verifySchema), resendVerifyEmail);
 
 export default authRouter;
