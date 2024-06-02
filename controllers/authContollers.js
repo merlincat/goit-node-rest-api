@@ -92,7 +92,7 @@ export const resendVerifyEmail = async (req, res, next) => {
     await sendEmail(verifyEmail);
 
     res.json({
-      email,
+      message: "Verification email sent",
     });
   } catch (error) {
     next(error);
@@ -133,7 +133,7 @@ export const login = async (req, res, next) => {
     next(error);
   }
 };
-export const getCurrent = async (req, res, next) => {
+export const getCurrent = (req, res, next) => {
   const { email, subscription } = req.user;
   res.json({
     email,
