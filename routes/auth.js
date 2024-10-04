@@ -1,12 +1,14 @@
 import express from "express";
 import validateBody from "../helpers/validateBody.js";
-import { registerSchema, loginSchema } from "../models/user.js";
+import { registerSchema, loginSchema, verifySchema } from "../models/user.js";
 import {
   getCurrent,
   login,
   logout,
   register,
+  resendVerifyEmail,
   updateSubscription,
+  verifyEmail,
 } from "../controllers/authContollers.js";
 import authenticate from "../helpers/authenticate.js";
 import { uploadAvatar } from "../controllers/userConroller.js";
@@ -25,5 +27,7 @@ authRouter.patch(
   authenticate,
   uploadAvatar
 );
+authRouter.get("/verify/:verificationToken", verifyEmail);
+authRouter.post("/verify", validateBody(verifySchema), resendVerifyEmail);
 
 export default authRouter;
